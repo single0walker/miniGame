@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .box{
+      width: 420px;
+      height: 200px;
+      display: flex;
+      justify-content: space-between;
+      margin: auto;
+    }
+    .box>div{
+      width: 100px;
+      height: 100px;
+      box-sizing: border-box;
+      border: 1px solid #000;
+      font-size: 50px;
+      text-align: center;
+      vertical-align: middle;
+      line-height: 100px;
+    }
+    #btn{
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <button onclick="start()" id="btn">start</button>
+    <div id="box1">?</div>
+    <div id="box2">?</div>
+    <div id="box3">?</div>
+  </div>
+  <!-- <button onclick="start()" id="btn">start</button> -->
+  <div style="width: 100%;text-align: center;font-size: 50px;">
+    Your Points: <span id="num">200</span>
+  </div>
+  <p style="width: 450px;margin: auto;margin-top: 50px;">
+    规则: <br>
+    从左向右看 连续两个数字相同 获得 2*数字 分数 (0按照10计数) <br>
+    从左向右看 连续三个数字相同 获得 5*数字 分数 (0按照10计数) <br>
+    每有一个 0 额外获得 5 分数
+  </p>
+  <a href="index.html" style="width: 200px; text-align: center;display: block;margin: auto;margin-top: 50px;">back to home</a>
+  <script>  
+    let box1 = document.getElementById('box1');
+    let box2 = document.getElementById('box2');
+    let box3 = document.getElementById('box3');
+    let btn = document.getElementById('btn');
+    let num = document.getElementById('num');
+    function start(){
+      num.innerHTML -= 10;
+      box1.innerHTML = '';
+      box2.innerHTML = '';
+      box3.innerHTML = '';
+      btn.disabled = true;
+      setTimeout(() => {box1.innerHTML = Math.floor(Math.random() *10)}, 300);
+      setTimeout(() => {box2.innerHTML = Math.floor(Math.random() *10)}, 600);
+      setTimeout(() => {box3.innerHTML = Math.floor(Math.random() *10);endgame()}, 900);
+    }
+    function endgame(){ 
+      
+      if(box1.innerHTML==box2.innerHTML){
+        if(box2.innerHTML==box3.innerHTML){
+          if(Number(box3.innerHTML)==0){
+            num.innerHTML = 10*10 +Number(num.innerHTML);
+          }else{
+            num.innerHTML = 10*Number(box3.innerHTML) +Number(num.innerHTML);
+          }
+          
+        }else{
+          if(Number(box2.innerHTML)==0){
+            num.innerHTML = 5*10 +Number(num.innerHTML);
+          }else{
+            num.innerHTML = 5*Number(box2.innerHTML)+Number(num.innerHTML);
+          }
+          
+        }
+      }
+      if(box1.innerHTML==0){
+        num.innerHTML=5+Number(num.innerHTML)
+      }
+      if(box2.innerHTML==0){
+        num.innerHTML=5+Number(num.innerHTML)
+      }
+      if(box3.innerHTML==0){
+        num.innerHTML=5+Number(num.innerHTML)
+      }
+      btn.disabled = false;
+    }
+  </script>
+</body>
+</html>

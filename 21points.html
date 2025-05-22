@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    span {
+      font-size: 70px;
+    }
+
+    #box {
+      width: 100%;
+      height: 700px;
+    }
+
+    #up,
+    #down {
+      width: 100%;
+      height: 50%;
+      text-align: center;
+    }
+
+    .card {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="box">
+    <div id="up">
+      <span id="text">Dealer</span>
+      <div class="card" id="Dealer">
+
+      </div>
+      <span style="font-size: 25px;" id="DealerNum">0</span>
+    </div>
+    <div id="down">
+      <div class="downTitel">
+        <span>You</span><br>
+        <button class="start" onclick="startGame()" id="start">start</button>
+        <button class="btn" id="addCard" onclick="addOneCard()">addCard</button>
+        <button class="btn" id="stop" onclick="stopGame()">stop</button>
+      </div>
+      <div class="card" id="You">
+
+      </div>
+      <span style="font-size: 25px;" id="YouNum">0</span>
+    </div>
+  </div>
+  <a href="index.html" style="width: 200px; text-align: center;display: block;margin: auto;margin-top: 50px;">back to home</a>
+
+
+  <script>
+
+
+    let cards = []//牌库
+    let back = 0x1F0A0//卡背
+    let isStart = false
+    let yourcardarr = []
+    let dealercardarr = []
+    let yourcardhtml = ''
+    let dealercardhtml = ''
+    let yourcardnum = 0
+    let dealercardnum = 0
+
+    //初始化牌库
+    function getCard() {
+      cards = []
+      let aa = 0x1F0A1
+      for (let j = 0; j < 4; j++) {
+        for (let i = 0; i < 14; i++) {
+          if (i != 11) {
+            cards.push({
+              num: i + 1 > 10 ? 10 : i + 1,
+              str: aa
+            })
+          }
+
+          aa++
+        }
+        aa += 2
+      }
+    }
+
+    let box = document.getElementById('box')
+    let start = document.getElementById('start')
+    let addCard = document.getElementById('addCard')
+    let stop = document.getElementById('stop')
+    let dealer = document.getElementById('Dealer')
+    let you = document.getElementById('You')
+    let DealerNum = document.getElementById('DealerNum')
+    let YouNum = document.getElementById('YouNum')
+    function debug() {
+      let _html = ''
+      for (let i = 0; i < cards.length; i++) {
+        const char = String.fromCodePoint(cards[i].str);
+
+        _html += `
+      <span class="card">${char}</span>
+      `
+        if ((i + 1) % 13 == 0) {
+          _html += `<br>`
+          console.log('13')
+        }
+      }
+      box.innerHTML = _html
+    }
+    function startGame() {
+      yourcardhtml = ''
+      dealercardhtml = ''
+      dealercardarr = []
+      yourcardarr = []
+      yourcardnum = 0
+      dealercardnum = 0
+      dealer.innerHTML = ''
+      you.innerHTML = ''
+      isStart = true
+      changeBtn()
+      getCard()
+      yourcardarr.push(addCards())
+      yourcardarr.push(addCards())
+      dealercardarr.push(addCards())
+      for (let i of yourcardarr) {
+        const char = String.fromCodePoint(i.str);
+        yourcardhtml += `<span>${char}</span>`
+        if (i.num == 1) {
+          yourcardnum = yourcardnum + 11 > 21 ? yourcardnum + 1 : yourcardnum + 11
+        } else {
+          yourcardnum += i.num
+        }
+
+      }
+      for (let i of dealercardarr) {
+        console.log(i)
+        const char = String.fromCodePoint(i.str);
+        dealercardhtml += `<span>${char}</span>`
+        if (i.num == 1) {
+          dealercardnum = dealercardnum + 11 > 21 ? dealercardnum + 1 : dealercardnum + 11
+        } else {
+          dealercardnum += i.num
+        }
+      }
+      console.log(dealercardarr, dealercardhtml)
+      dealer.innerHTML = dealercardhtml
+      you.innerHTML = yourcardhtml
+      DealerNum.innerHTML = dealercardnum
+      YouNum.innerHTML = yourcardnum
+      if (yourcardnum == 21) {
+        isStart = false
+        changeBtn()
+        alert('you win')
+      }
+    }
+
+    function changeBtn() {
+      if (isStart) {
+        start.disabled = true;
+        addCard.disabled = false;
+        stop.disabled = false;
+      } else {
+        start.disabled = false;
+        addCard.disabled = true;
+        stop.disabled = true;
+      }
+
+    }
+    changeBtn()
+
+    function addCards() {
+      let index = Math.floor(Math.random() * cards.length);
+      let picked = cards[index];
+      cards.splice(index, 1);
+      return picked;
+    }
+
+
+    function addOneCard() {
+      // yourcardhtml=''
+      // dealercardhtml=''
+      // yourcardnum=0
+      // dealercardnum=0
+      let card = addCards()
+      yourcardarr.push(card)
+      const char = String.fromCodePoint(card.str);
+      yourcardhtml += `<span>${char}</span>`
+      if (card.num == 1) {
+        yourcardnum = yourcardnum + 11 > 21 ? yourcardnum + 1 : yourcardnum + 11
+      } else {
+        yourcardnum += card.num
+      }
+      you.innerHTML = yourcardhtml
+      YouNum.innerHTML = yourcardnum
+      if (yourcardnum > 21) {
+        isStart = false
+        changeBtn()
+      }
+      if (yourcardnum == 21) {
+        isStart = false
+        changeBtn()
+        alert('you win')
+      }
+    }
+    function stopGame() {
+      isStart = false
+      changeBtn()
+      let card = addCards()
+      dealercardarr.push(card)
+      const char = String.fromCodePoint(card.str);
+      dealercardhtml += `<span>${char}</span>`
+      if (card.num == 1) {
+        dealercardnum = dealercardnum + 11 > 21 ? dealercardnum + 1 : dealercardnum + 11
+      } else {
+        dealercardnum += card.num
+      }
+      while (dealercardnum < 17 || dealercardnum<yourcardnum) {
+        let card = addCards()
+        dealercardarr.push(card)
+        const char = String.fromCodePoint(card.str);
+        dealercardhtml += `<span>${char}</span>`
+        if (card.num == 1) {
+          dealercardnum = dealercardnum + 11 > 21 ? dealercardnum + 1 : dealercardnum + 11
+        } else {
+          dealercardnum += card.num
+        }
+      }
+      dealer.innerHTML = dealercardhtml
+      DealerNum.innerHTML = dealercardnum
+      setTimeout(() => {
+        final()
+      }, 200);
+    }
+    function final(){
+      if(dealercardnum>=yourcardnum && yourcardnum<=21 && dealercardnum<=21 ){
+        alert('dealer win')
+        return
+      }
+      if(dealercardnum<yourcardnum && yourcardnum<=21 && dealercardnum<=21){
+        alert('you win')
+        return
+      }
+      if(dealercardnum>21){
+        alert('you win')
+        return
+      }
+      if(yourcardnum>21){
+        alert('dealer win')
+        return
+      }
+    }
+  </script>
+</body>
+
+</html>
